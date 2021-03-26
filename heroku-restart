@@ -1,0 +1,1 @@
+heroku dyno:restart -a qantum-realtime-bff && ./heroku-logs

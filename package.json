@@ -1,0 +1,117 @@
+{
+  "name": "qantum-realtime-bff",
+  "version": "1.0.0",
+  "description": "Front-end service to serve real time data from the back-end to the browser",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "tsc --skipLibCheck",
+    "build:ci": "CI=true npm run build",
+    "build:dev": "tsc --skipLibCheck --sourceMap",
+    "build:dev:watch": "onchange 'src/**/*.ts' -- npm run build:dev",
+    "build:proto": "mkdir -p src/grpc_client/types && grpc_tools_node_protoc --plugin=protoc-gen-ts=./node_modules/.bin/protoc-gen-ts --ts_out=src/grpc_client/types -I src/grpc_client/proto src/grpc_client/proto/*.proto && grpc_tools_node_protoc --js_out=import_style=commonjs,binary:src/grpc_client/types --grpc_out=src/grpc_client/types --plugin=protoc-gen-grpc=./node_modules/.bin/grpc_tools_node_protoc_plugin -I src/grpc_client/proto src/grpc_client/proto/*.proto",
+    "clean": "rimraf coverage lib",
+    "lint": "tslint --type-check -p . -c tslint.json 'src/**/*.ts'",
+    "lint:fix": "tslint --fix --type-check -p . -c tslint.json 'src/**/*.ts'",
+    "prebuild": "npm run reset",
+    "prebuild:dev": "npm run reset",
+    "prestart:prettyLog": "npm run build",
+    "prestart:watch": "npm run reset",
+    "pretest": "npm run reset",
+    "prettier": "prettier --write 'src/**/*.{json,md,ts}' '*.{json,md,ts}'",
+    "reset": "npm run clean ; npm run build:proto ; npm run lint",
+    "start": "node lib/index.js",
+    "start:prettyLog": "node lib/index.js | bunyan",
+    "start:watch": "nodemon --watch src --ext ts --exec ts-node 'src/index.ts'",
+    "test": "NODE_ENV=test jest --passWithNoTests --runInBand --watchAll=false",
+    "test:ci": "NODE_ENV=test CI=true npm run test && npm run build:ci",
+    "test:coverage": "NODE_ENV=test jest --passWithNoTests --runInBand --coverage --watchAll",
+    "test:coverage:no-watch": "NODE_ENV=test jest --passWithNoTests --runInBand --coverage --watchAll=false",
+    "test:watch": "NODE_ENV=test jest --passWithNoTests --runInBand --watchAll",
+    "view:coverage": "serve coverage/lcov-report"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@gitlab.qosenergy.com:qosenergy/qantum-realtime-bff.git"
+  },
+  "author": "David Cho-Lerat <dcholerat@qosenergy.com>",
+  "dependencies": {
+    "@grpc/proto-loader": "^0.5.6",
+    "bunyan": "^1.8.15",
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "google-protobuf": "^3.15.6",
+    "grpc": "^1.24.6",
+    "helmet": "^4.4.1",
+    "inversify": "^5.0.5",
+    "inversify-express-utils": "^6.3.2",
+    "pjson": "^1.0.9",
+    "reflect-metadata": "^0.1.13",
+    "socket.io": "^4.0.0",
+    "socket.io-client": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/bunyan": "^1.8.6",
+    "@types/compression": "^1.7.0",
+    "@types/cors": "^2.8.10",
+    "@types/express": "^4.17.11",
+    "@types/helmet": "^4.0.0",
+    "@types/jest": "^26.0.21",
+    "@types/node": "^14.14.35",
+    "@types/socket.io": "^2.1.13",
+    "grpc-tools": "1.6.6",
+    "grpc_tools_node_protoc_ts": "^5.1.3",
+    "husky": "^5.2.0",
+    "jest": "^26.6.1",
+    "lint-staged": "^10.5.4",
+    "nodemon": "^2.0.7",
+    "onchange": "^7.0.2",
+    "prettier": "^2.2.1",
+    "rimraf": "^3.0.2",
+    "serve": "^11.3.2",
+    "ts-jest": "^26.5.4",
+    "ts-node": "^9.1.1",
+    "tslint": "^6.1.3",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-plugin-prettier": "^2.3.0",
+    "typescript": "^4.2.3"
+  },
+  "lint-staged": {
+    "*.{ts,md,json}": [
+      "prettier --write"
+    ]
+  },
+  "jest": {
+    "roots": [
+      "<rootDir>"
+    ],
+    "transform": {
+      ".ts": "ts-jest"
+    },
+    "collectCoverageFrom": [
+      "src/**/{!(*.test),}.ts"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 100,
+        "functions": 100,
+        "lines": 100,
+        "statements": 100
+      }
+    },
+    "coverageReporters": [
+      "json",
+      "lcov",
+      "text",
+      "clover"
+    ],
+    "testRegex": "src\\/(.+\\/)*.+\\.test\\.ts$",
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "node",
+      "ts"
+    ]
+  }
+}

@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package qantum;
+
+service Sensors {
+  rpc SensorData(stream SensorDataItem) returns (stream SensorDataItem) {}
+}
+
+message SensorDataItem {
+  string sensorID = 1;
+  float sensorData = 2;
+}
